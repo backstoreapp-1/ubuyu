@@ -12,5 +12,3 @@ services:
         value: production
       - key: SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        env: DATABASE_URL
