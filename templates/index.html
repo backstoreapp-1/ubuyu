@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>🍬 Fresh Ubuyu Candies</h1>
+        <p>Taste authentic African sweetness delivered straight to your door. Shop from local vendors today!</p>
+        <a href="{{ url_for('products.catalog') }}" class="btn btn-lg btn-primary">Start Shopping</a>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="section featured-section">
+    <div class="section-title">
+        <h2>⭐ Featured Products</h2>
+        <p>Handpicked favorites from our best vendors</p>
+    </div>
+    
+    <div class="products-grid" id="featured-products">
+        {% if featured %}
+            {% for product in featured %}
+            <div class="product-card" onclick="viewProduct({{ product.id }})">
+                <div class="product-image">
+                    {% if product.images and product.images[0].image %}
+                        <img src="/{{ upload_folder }}/{{ product.images[0].image }}" alt="{{ product.name }}">
+                    {% elif product.image %}
+                        <img src="/{{ upload_folder }}/{{ product.image }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/250x200?text={{ product.name }}" alt="{{ product.name }}">
+                    {% endif %}
+                    <span class="product-badge">FEATURED</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">KES {{ "%.2f"|format(product.price) }}</div>
+                    <div class="product-rating">
+                        {% for i in range(5) %}
+                            <span class="star">★</span>
+                        {% endfor %}
+                        <span>({{ product.total_reviews }})</span>
+                    </div>
+                    <p class="product-description">{{ product.description[:100] }}...</p>
+                    <div class="product-footer">
+                        <button class="btn btn-primary" onclick="addToCart({{ product.id }})">Add to Cart</button>
+                        <button class="btn btn-outline" onclick="viewProduct({{ product.id }})">View</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No featured products yet.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Trending Section -->
+<section class="section">
+    <div class="section-title">
+        <h2>🔥 Trending Now</h2>
+        <p>Most popular ubuyu varieties this week</p>
+    </div>
+    
+    <div class="products-grid" id="trending-products">
+        {% if trending %}
+            {% for product in trending %}
+            <div class="product-card" onclick="viewProduct({{ product.id }})">
+                <div class="product-image">
+                    {% if product.images and product.images[0].image %}
+                        <img src="/{{ upload_folder }}/{{ product.images[0].image }}" alt="{{ product.name }}">
+                    {% elif product.image %}
+                        <img src="/{{ upload_folder }}/{{ product.image }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/250x200?text={{ product.name }}" alt="{{ product.name }}">
+                    {% endif %}
+                    <span class="product-badge">TRENDING</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">KES {{ "%.2f"|format(product.price) }}</div>
+                    <div class="product-rating">
+                        {% for i in range(product.rating|int) %}
+                            <span class="star">★</span>
+                        {% endfor %}
+                        <span>({{ product.total_reviews }})</span>
+                    </div>
+                    <p class="product-description">{{ product.description[:100] }}...</p>
+                    <div class="product-footer">
+                        <button class="btn btn-primary" onclick="addToCart({{ product.id }})">Add to Cart</button>
+                        <button class="btn btn-outline" onclick="viewProduct({{ product.id }})">View</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No trending products available.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Why Ubuyu Section -->
+<section class="section" style="background: linear-gradient(135deg, rgba(245, 124, 0, 0.05) 0%, rgba(211, 47, 47, 0.05) 100%);">
+    <div class="section-title">
+        <h2>Why Choose Ubuyu?</h2>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+        <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
+            <h3>Local Vendors</h3>
+            <p>Support small businesses and local farmers across Kenya</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+            <h3>Fast Delivery</h3>
+            <p>Fresh candies delivered to your door within 24-48 hours</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+            <h3>Quality Guaranteed</h3>
+            <p>All products vetted for quality and authenticity</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+            <h3>Great Prices</h3>
+            <p>Direct from vendors = better prices for you</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section style="background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-orange) 100%); color: white; padding: 3rem 2rem; text-align: center;">
+    <h2 style="color: white; margin-bottom: 1rem;">Ready to taste authentic ubuyu?</h2>
+    <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem;">Join thousands of satisfied customers</p>
+    <a href="{{ url_for('products.catalog') }}" class="btn btn-lg" style="background: white; color: var(--primary-red);">Shop Now</a>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Load featured and trending products
+    async function loadFeatured() {
+        const res = await fetch('/products/api/featured');
+        const products = await res.json();
+        // Display products
+    }
+    
+    function viewProduct(id) {
+        window.location.href = '/products/' + id;
+    }
+    
+    // Initialize
+    updateCartBadge();
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') search();
+    });
+</script>
+{% endblock %}

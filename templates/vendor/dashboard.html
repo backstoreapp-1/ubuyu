@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Dashboard - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <h1>📊 Vendor Dashboard</h1>
+    <p>Welcome back, {{ current_user.full_name }}!</p>
+    
+    <!-- Stats -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+        <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+            <h3 style="color: var(--primary-red);">{{ total_products }}</h3>
+            <p>Products Listed</p>
+        </div>
+        <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+            <h3 style="color: var(--primary-orange);">{{ total_orders }}</h3>
+            <p>Total Orders</p>
+        </div>
+        <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+            <h3 style="color: var(--primary-yellow);">{{ pending_orders }}</h3>
+            <p>Pending Orders</p>
+        </div>
+        <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; text-align: center;">
+            <h3 style="color: var(--dark-brown);">KES {{ "%.2f"|format(vendor.total_earnings) }}</h3>
+            <p>Total Earnings</p>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div style="display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap;">
+        <a href="{{ url_for('vendor.add_product') }}" class="btn btn-primary">+ Add Product</a>
+        <a href="{{ url_for('vendor.products') }}" class="btn btn-secondary">Manage Products</a>
+        <a href="{{ url_for('vendor.orders') }}" class="btn btn-outline">View Orders</a>
+        <a href="{{ url_for('vendor.settings') }}" class="btn btn-outline">Settings</a>
+    </div>
+    
+    <!-- Recent Orders -->
+    <h2>Recent Orders</h2>
+    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: var(--light-gray);">
+                <tr>
+                    <th style="padding: 1rem; text-align: left;">Order #</th>
+                    <th style="padding: 1rem; text-align: left;">Customer</th>
+                    <th style="padding: 1rem; text-align: left;">Amount</th>
+                    <th style="padding: 1rem; text-align: left;">Status</th>
+                    <th style="padding: 1rem; text-align: left;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr style="border-bottom: 1px solid var(--border-gray);">
+                    <td style="padding: 1rem;">{{ order.order_number }}</td>
+                    <td style="padding: 1rem;">{{ order.customer.full_name }}</td>
+                    <td style="padding: 1rem;">KES {{ "%.2f"|format(order.total_amount) }}</td>
+                    <td style="padding: 1rem;">
+                        <span style="background: {% if order.status == 'delivered' %}#4caf50{% elif order.status == 'shipped' %}#ff9800{% else %}#f44336{% endif %}; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">
+                            {{ order.status.upper() }}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <a href="{{ url_for('orders.detail', order_id=order.id) }}" class="btn btn-outline" style="padding: 0.5rem 1rem;">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if not recent_orders %}
+    <p style="text-align: center; padding: 2rem; color: #999;">No orders yet. Share your products to get started!</p>
+    {% endif %}
+</div>
+{% endblock %}

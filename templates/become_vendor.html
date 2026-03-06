@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Become a Vendor - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <div style="background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-orange) 100%); color: white; padding: 3rem; border-radius: 8px; margin-bottom: 3rem; text-align: center;">
+        <h1 style="color: white;">Sell Your Ubuyu on Ubuyu Marketplace</h1>
+        <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">Join hundreds of vendors selling authentic African candies</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <div style="background: var(--light-gray); padding: 2rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">💰</div>
+            <h3>Earn More</h3>
+            <p>Direct to customers = better margins. No middlemen taking cuts.</p>
+        </div>
+        
+        <div style="background: var(--light-gray); padding: 2rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🌍</div>
+            <h3>Reach More</h3>
+            <p>Sell to customers across Kenya without leaving home.</p>
+        </div>
+        
+        <div style="background: var(--light-gray); padding: 2rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
+            <h3>Track Everything</h3>
+            <p>Dashboard to track sales, earnings, and customer feedback.</p>
+        </div>
+        
+        <div style="background: var(--light-gray); padding: 2rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+            <h3>Secure Payments</h3>
+            <p>Get paid safely through M-Pesa, PayPal, or bank transfer.</p>
+        </div>
+    </div>
+    
+    {% if current_user.is_authenticated and current_user.role == 'vendor' %}
+        <div style="background: #e8f5e9; padding: 2rem; border-radius: 8px; text-align: center;">
+            <h2 style="color: #2e7d32;">✓ You're already a vendor!</h2>
+            <p>Your vendor account is being reviewed by our team.</p>
+            <a href="{{ url_for('vendor.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+    {% else %}
+        <form method="POST" style="background: white; padding: 2rem; border-radius: 8px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h2 style="margin-bottom: 2rem;">Get Started Today</h2>
+            
+            {% if current_user.is_authenticated %}
+                <!-- Already logged in, just need store info -->
+                <div class="form-group">
+                    <label for="store_name">Store Name *</label>
+                    <input type="text" id="store_name" name="store_name" required placeholder="E.g., Mama Zainab's Ubuyu">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Store Description</label>
+                    <textarea id="description" name="description" placeholder="Tell customers about your store..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-lg btn-primary" style="width: 100%; margin-top: 1rem;">Become a Vendor</button>
+            {% else %}
+                <p style="margin-bottom: 1rem; color: #666;">You need to be logged in to become a vendor.</p>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary" style="flex: 1; text-align: center;">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary" style="flex: 1; text-align: center;">Sign Up</a>
+                </div>
+            {% endif %}
+        </form>
+        
+        <div style="margin-top: 3rem; padding: 2rem; background: #fff3e0; border-left: 4px solid var(--primary-orange); border-radius: 4px;">
+            <h3>What Happens Next?</h3>
+            <ol style="line-height: 2;">
+                <li><strong>Apply</strong> - Fill out your store information</li>
+                <li><strong>Wait</strong> - Our team reviews your application (24-48 hours)</li>
+                <li><strong>Approved</strong> - Start adding products and selling</li>
+                <li><strong>Get Paid</strong> - Receive payments daily or weekly</li>
+            </ol>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

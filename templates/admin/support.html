@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Support - Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 1000px; margin: 2rem auto;">
+        <!-- Header -->
+        <div style="margin-bottom: 2rem;">
+            <h2>💬 Customer Support</h2>
+            <p style="color: #999; margin: 0;">Manage customer messages and support tickets</p>
+        </div>
+        
+        <!-- Customers List -->
+        <div style="background: white; border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden;">
+            {% if customers %}
+                {% for customer in customers %}
+                {% set unread = customer.messages_sent|selectattr('receiver_id', 'equalto', current_user.id)|selectattr('is_read', 'equalto', False)|list|length %}
+                <a href="{{ url_for('admin.support_conversation', customer_id=customer.id) }}" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-gray); text-decoration: none; color: inherit; transition: background 0.2s;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--primary-orange); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; flex-shrink: 0;">
+                        {{ (customer.full_name or customer.username)[0].upper() }}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 600;">{{ customer.full_name or customer.username }}</div>
+                        <div style="font-size: 0.9rem; color: #999;">{{ customer.email }}</div>
+                    </div>
+                    {% if unread > 0 %}
+                    <div style="background: var(--primary-red); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">{{ unread }}</div>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            {% else %}
+                <div style="padding: 2rem; text-align: center; color: #999;">
+                    <p>No customer conversations yet</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+a[href*="support_conversation"]:hover {
+    background: var(--light-gray);
+}
+</style>
+{% endblock %}

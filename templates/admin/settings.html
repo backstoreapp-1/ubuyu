@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Settings - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-section">
+        <h1>Admin Settings</h1>
+        
+        <div class="settings-card">
+            <h2>Platform Settings</h2>
+            
+            <div class="settings-form">
+                <div class="form-group">
+                    <label>Platform Name</label>
+                    <input type="text" value="Ubuyu Marketplace" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Support Email</label>
+                    <input type="email" value="support@ubuyu.local" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Commission Rate (%)</label>
+                    <input type="number" value="10" placeholder="Commission percentage">
+                </div>
+                
+                <div class="form-group">
+                    <label>Min Vendor Balance (KSh)</label>
+                    <input type="number" value="500" placeholder="Minimum balance">
+                </div>
+                
+                <button class="btn btn-primary">Save Settings</button>
+            </div>
+        </div>
+        
+        <div class="settings-card">
+            <h2>Notifications</h2>
+            
+            <div class="notification-settings">
+                <label>
+                    <input type="checkbox" checked> Send order confirmations
+                </label>
+                <label>
+                    <input type="checkbox" checked> Notify vendors of new orders
+                </label>
+                <label>
+                    <input type="checkbox" checked> Notify customers of shipping
+                </label>
+                <label>
+                    <input type="checkbox" checked> Send weekly reports to admin
+                </label>
+            </div>
+            
+            <button class="btn btn-primary">Save Notification Settings</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-section {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.admin-section h1 {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.settings-card {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.settings-card h2 {
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f5f5f5;
+    padding-bottom: 10px;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.form-group input:focus {
+    border-color: #d32f2f;
+    outline: none;
+}
+
+.notification-settings {
+    margin-bottom: 20px;
+}
+
+.notification-settings label {
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.notification-settings input {
+    margin-right: 10px;
+    cursor: pointer;
+}
+</style>
+{% endblock %}

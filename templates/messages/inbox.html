@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="messages-container">
+        <h1>Messages</h1>
+        
+        {% if messages.items %}
+        <div class="messages-list">
+            {% for message in messages.items %}
+            <div class="message-preview">
+                <div class="message-sender">
+                    <h3>{{ message.sender.full_name }}</h3>
+                    <small>{{ message.created_at.strftime('%B %d, %Y') }}</small>
+                </div>
+                <div class="message-excerpt">
+                    <p>{{ message.content[:100] }}{% if message.content|length > 100 %}...{% endif %}</p>
+                </div>
+                <div class="message-action">
+                    <a href="{{ url_for('messages.conversation', user_id=message.sender.id) }}" class="btn btn-primary btn-sm">Open</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if messages.pages > 1 %}
+        <div class="pagination">
+            {% if messages.has_prev %}
+                <a href="{{ url_for('messages.inbox', page=messages.prev_num) }}">Previous</a>
+            {% endif %}
+            
+            {% for page_num in messages.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num == messages.page %}
+                        <span class="current">{{ page_num }}</span>
+                    {% else %}
+                        <a href="{{ url_for('messages.inbox', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if messages.has_next %}
+                <a href="{{ url_for('messages.inbox', page=messages.next_num) }}">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <p class="text-center">No messages yet</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.messages-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.messages-container h1 {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.messages-list {
+    margin-bottom: 30px;
+}
+
+.message-preview {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message-sender h3 {
+    margin: 0;
+    color: #333;
+}
+
+.message-sender small {
+    color: #999;
+}
+
+.message-excerpt {
+    flex: 1;
+    margin: 0 20px;
+}
+
+.message-excerpt p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.message-action {
+    margin-left: auto;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.text-center {
+    text-align: center;
+    color: #999;
+    padding: 40px 20px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Approval Pending - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="pending-section">
+        <div class="pending-card">
+            <h1>Vendor Application Pending</h1>
+            
+            <div class="pending-message">
+                <p>Thank you for applying to become a vendor on Ubuyu Marketplace!</p>
+                
+                <p>Your application has been received and is currently under review by our admin team. We typically review applications within 24-48 hours.</p>
+                
+                <h2>What's Next?</h2>
+                <ul>
+                    <li>Our team will review your application</li>
+                    <li>We'll verify your store information</li>
+                    <li>You'll receive an email once approved</li>
+                    <li>You can then start selling your products</li>
+                </ul>
+                
+                <p class="note">You'll receive a notification email once your application is approved. In the meantime, you can browse our marketplace and add items to your cart.</p>
+                
+                <div class="pending-actions">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary">Back to Home</a>
+                    <a href="{{ url_for('products.catalog') }}" class="btn btn-secondary">Browse Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.pending-section {
+    padding: 60px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+}
+
+.pending-card {
+    background: white;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 600px;
+    text-align: center;
+}
+
+.pending-card h1 {
+    color: #f57c00;
+    margin-bottom: 30px;
+}
+
+.pending-message h2 {
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.pending-message ul {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.pending-message li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #f5f5f5;
+    border-left: 4px solid #f57c00;
+    border-radius: 4px;
+}
+
+.pending-message p {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.note {
+    background: #fff3e0;
+    border-left: 4px solid #f57c00;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.pending-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pending-actions .btn {
+    flex: 1;
+    min-width: 150px;
+}
+</style>
+{% endblock %}

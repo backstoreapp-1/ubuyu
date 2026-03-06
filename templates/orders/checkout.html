@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 2rem auto; padding: 2rem;">
+    <h1>🛒 Checkout</h1>
+    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        <!-- Checkout Form -->
+        <div>
+            <form method="POST" id="checkout-form" style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Delivery Information -->
+                <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px;">
+                    <h3>Delivery Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="delivery_address">Delivery Address *</label>
+                        <textarea id="delivery_address" name="delivery_address" required placeholder="Street address, apartment, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="delivery_notes">Delivery Notes</label>
+                        <textarea id="delivery_notes" name="delivery_notes" placeholder="Any special instructions?"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Payment Method -->
+                <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px;">
+                    <h3>Payment Method</h3>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" name="payment_method" value="mpesa" checked> M-Pesa
+                        </label>
+                        <label>
+                            <input type="radio" name="payment_method" value="paypal"> PayPal
+                        </label>
+                        <label>
+                            <input type="radio" name="payment_method" value="cash"> Cash on Delivery
+                        </label>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="cart_data" name="cart_data" value="">
+                <button type="submit" class="btn btn-lg btn-primary">Complete Order</button>
+            </form>
+        </div>
+        
+        <!-- Order Summary -->
+        <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; height: fit-content;">
+            <h3>Order Summary</h3>
+            
+            <div id="cart-items" style="border-bottom: 1px solid var(--border-gray); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <!-- Cart items will be loaded here -->
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">KES 0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Delivery:</span>
+                    <span id="delivery">KES 100.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; color: var(--primary-red);">
+                    <span>Total:</span>
+                    <span id="total">KES 100.00</span>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('products.catalog') }}" class="btn btn-outline" style="width: 100%; text-align: center;">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Load cart and calculate totals
+    function loadCart() {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        document.getElementById('cart_data').value = JSON.stringify(cart);
+        
+        // In a real app, you'd fetch product details from the server
+        // For now, just show the count
+        const itemsDiv = document.getElementById('cart-items');
+        if (cart.length === 0) {
+            itemsDiv.innerHTML = '<p>Your cart is empty</p>';
+            return;
+        }
+        
+        let html = '';
+        cart.forEach((item, index) => {
+            html += `<div style="padding: 0.5rem 0;">Item ${index + 1}</div>`;
+        });
+        itemsDiv.innerHTML = html;
+        
+        // Calculate totals
+        const subtotal = cart.length * 150;  // Placeholder price
+        const delivery = 100;
+        const total = subtotal + delivery;
+        
+        document.getElementById('subtotal').textContent = 'KES ' + subtotal.toFixed(2);
+        document.getElementById('total').textContent = 'KES ' + total.toFixed(2);
+    }
+    
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (document.getElementById('delivery_address').value.trim()) {
+            this.submit();
+        } else {
+            alert('Please enter delivery address');
+        }
+    });
+    
+    loadCart();
+</script>
+{% endblock %}

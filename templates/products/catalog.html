@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Shop - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+    <h1 style="margin-bottom: 2rem;">🛒 Product Catalog</h1>
+    
+    <!-- Filters Sidebar -->
+    <div style="display: grid; grid-template-columns: 250px 1fr; gap: 2rem;">
+        <aside style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; height: fit-content;">
+            <h3>Filters</h3>
+            
+            <form method="GET" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Search -->
+                <div class="form-group">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" name="search" value="{{ search or '' }}" placeholder="Product name...">
+                </div>
+                
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="">All Categories</option>
+                        <option value="candy" {% if category == 'candy' %}selected{% endif %}>Candy</option>
+                        <option value="snack" {% if category == 'snack' %}selected{% endif %}>Snack</option>
+                        <option value="beverage" {% if category == 'beverage' %}selected{% endif %}>Beverage</option>
+                    </select>
+                </div>
+                
+                <!-- Price Range -->
+                <div class="form-group">
+                    <label for="min_price">Min Price (KES)</label>
+                    <input type="number" id="min_price" name="min_price" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="max_price">Max Price (KES)</label>
+                    <input type="number" id="max_price" name="max_price" min="0">
+                </div>
+                
+                <!-- Sorting -->
+                <div class="form-group">
+                    <label for="sort">Sort by</label>
+                    <select id="sort" name="sort">
+                        <option value="latest">Latest</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Apply Filters</button>
+            </form>
+        </aside>
+        
+        <!-- Products -->
+        <div>
+            <div class="products-grid">
+                {% if products.items %}
+                    {% for product in products.items %}
+                    <div class="product-card" onclick="viewProduct({{ product.id }})">
+                        <div class="product-image">
+                            {% if product.images and product.images[0].image %}
+                                <img src="/{{ upload_folder }}/{{ product.images[0].image }}" alt="{{ product.name }}">
+                            {% elif product.image %}
+                                <img src="/{{ upload_folder }}/{{ product.image }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/250x200?text={{ product.name }}" alt="{{ product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">{{ product.name }}</div>
+                            <div style="font-size: 0.9rem; color: #999; margin-bottom: 0.5rem;">by {{ product.vendor.store_name }}</div>
+                            <div class="product-price">KES {{ "%.2f"|format(product.price) }}</div>
+                            <div class="product-rating">
+                                {% for i in range(product.rating|int) %}
+                                    <span class="star">★</span>
+                                {% endfor %}
+                                <span>({{ product.total_reviews }})</span>
+                            </div>
+                            <p class="product-description">{{ product.description[:80] }}...</p>
+                            <div class="product-footer">
+                                <button class="btn btn-primary" onclick="addToCart({{ product.id }}); event.stopPropagation();">Add</button>
+                                <button class="btn btn-outline" onclick="viewProduct({{ product.id }}); event.stopPropagation();">View</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="grid-column: 1 / -1; text-align: center; padding: 2rem;">No products found. Try adjusting your filters.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if products.pages > 1 %}
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                {% if products.has_prev %}
+                    <a href="{{ url_for('products.catalog', page=products.prev_num, search=search, category=category, sort=sort) }}" class="btn btn-outline">← Prev</a>
+                {% endif %}
+                
+                <span style="align-self: center;">Page {{ products.page }} of {{ products.pages }}</span>
+                
+                {% if products.has_next %}
+                    <a href="{{ url_for('products.catalog', page=products.next_num, search=search, category=category, sort=sort) }}" class="btn btn-outline">Next →</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewProduct(id) {
+        window.location.href = '/products/' + id;
+    }
+</script>
+{% endblock %}

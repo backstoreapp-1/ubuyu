@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="conversation-container">
+        <h1>Conversation with {{ other_user.full_name }}</h1>
+        
+        <div class="conversation-messages">
+            {% for message in messages %}
+            <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+                <div class="message-content">{{ message.content }}</div>
+                <small class="message-time">{{ message.created_at.strftime('%I:%M %p') }}</small>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <form method="POST" action="{{ url_for('messages.send_message', user_id=other_user.id) }}" class="message-form">
+            <input type="text" name="content" placeholder="Type your message..." required>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</div>
+
+<style>
+.conversation-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.conversation-container h1 {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.conversation-messages {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    height: 500px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.message {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.message.sent {
+    align-items: flex-end;
+}
+
+.message-content {
+    background: #d32f2f;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.message.received .message-content {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.message-time {
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.message-form {
+    display: flex;
+    gap: 10px;
+}
+
+.message-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.message-form input:focus {
+    border-color: #d32f2f;
+    outline: none;
+}
+
+.message-form .btn {
+    padding: 10px 20px;
+}
+</style>
+{% endblock %}

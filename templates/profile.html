@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-section">
+        <h1>My Profile</h1>
+        
+        <div class="profile-card">
+            <div class="profile-header">
+                <h2>{{ current_user.full_name }}</h2>
+                <p class="profile-role">{{ current_user.role.capitalize() }}</p>
+            </div>
+            
+            <div class="profile-info">
+                <div class="info-group">
+                    <label>Email:</label>
+                    <p>{{ current_user.email }}</p>
+                </div>
+                
+                <div class="info-group">
+                    <label>Username:</label>
+                    <p>{{ current_user.username }}</p>
+                </div>
+                
+                <div class="info-group">
+                    <label>Member Since:</label>
+                    <p>{{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+                </div>
+            </div>
+            
+            {% if current_user.role == 'customer' %}
+            <div class="profile-actions">
+                <a href="{{ url_for('orders.history') }}" class="btn btn-primary">View Orders</a>
+                <a href="{{ url_for('messages.inbox') }}" class="btn btn-secondary">Messages</a>
+            </div>
+            {% elif current_user.role == 'vendor' %}
+            <div class="profile-actions">
+                <a href="{{ url_for('vendor.dashboard') }}" class="btn btn-primary">Vendor Dashboard</a>
+                <a href="{{ url_for('vendor.products') }}" class="btn btn-secondary">Manage Products</a>
+            </div>
+            {% elif current_user.role == 'admin' %}
+            <div class="profile-actions">
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">Admin Dashboard</a>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">Manage Users</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-section {
+    padding: 40px 20px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    border-bottom: 2px solid #d32f2f;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.profile-header h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.profile-role {
+    color: #d32f2f;
+    font-weight: bold;
+    margin: 0;
+}
+
+.profile-info {
+    margin-bottom: 30px;
+}
+
+.info-group {
+    margin-bottom: 20px;
+}
+
+.info-group label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.info-group p {
+    margin: 0;
+    color: #777;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.profile-actions .btn {
+    flex: 1;
+    min-width: 150px;
+}
+</style>
+{% endblock %}

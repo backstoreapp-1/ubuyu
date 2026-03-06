@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Order Details - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="order-detail">
+        <h1>Order #{{ order.id }}</h1>
+        
+        <div class="order-status">
+            <p><strong>Status:</strong> <span class="status {{ order.status }}">{{ order.status.upper() }}</span></p>
+            <p><strong>Order Date:</strong> {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+        </div>
+        
+        <h2>Items</h2>
+        <div class="order-items">
+            {% for item in order.items %}
+            <div class="order-item">
+                <div class="item-info">
+                    <h3>{{ item.product.name }}</h3>
+                    <p>Quantity: {{ item.quantity }}</p>
+                </div>
+                <div class="item-price">
+                    <p>KSh {{ "%.2f"|format(item.price * item.quantity) }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="order-summary">
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>KSh {{ "%.2f"|format(order.total_amount * 0.9) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping:</span>
+                <span>KSh 100.00</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total:</span>
+                <span>KSh {{ "%.2f"|format(order.total_amount) }}</span>
+            </div>
+        </div>
+        
+        <h2>Delivery Address</h2>
+        <div class="delivery-info">
+            <p>{{ order.delivery_address }}</p>
+        </div>
+        
+        <div class="order-actions">
+            <a href="{{ url_for('orders.history') }}" class="btn btn-secondary">Back to Orders</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.order-detail {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.order-detail h1 {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.order-status {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 30px;
+}
+
+.order-status p {
+    margin: 5px 0;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.status.pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status.delivered {
+    background: #e8f5e9;
+    color: #4caf50;
+}
+
+.order-items {
+    margin: 30px 0;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.item-price {
+    text-align: right;
+}
+
+.order-summary {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 4px;
+    margin: 30px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.summary-row.total {
+    border-top: 2px solid #ddd;
+    padding-top: 10px;
+    font-weight: bold;
+    color: #d32f2f;
+}
+
+.delivery-info {
+    background: white;
+    padding: 15px;
+    border-left: 4px solid #d32f2f;
+    border-radius: 4px;
+    margin-bottom: 30px;
+}
+
+.order-actions {
+    text-align: center;
+}
+</style>
+{% endblock %}

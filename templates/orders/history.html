@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Order History - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="order-history">
+        <h1>My Orders</h1>
+        
+        {% if orders.items %}
+        <div class="orders-list">
+            {% for order in orders.items %}
+            <div class="order-card">
+                <div class="order-header">
+                    <h3>Order #{{ order.id }}</h3>
+                    <span class="status {{ order.status }}">{{ order.status.upper() }}</span>
+                </div>
+                
+                <div class="order-info">
+                    <p><strong>Date:</strong> {{ order.created_at.strftime('%B %d, %Y') }}</p>
+                    <p><strong>Items:</strong> {{ order.items|length }}</p>
+                    <p><strong>Total:</strong> KSh {{ "%.2f"|format(order.total_amount) }}</p>
+                </div>
+                
+                <div class="order-actions">
+                    <a href="{{ url_for('orders.detail', order_id=order.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                    <a href="{{ url_for('orders.track', order_id=order.id) }}" class="btn btn-secondary btn-sm">Track Order</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if orders.pages > 1 %}
+        <div class="pagination">
+            {% if orders.has_prev %}
+                <a href="{{ url_for('orders.history', page=orders.prev_num) }}">Previous</a>
+            {% endif %}
+            
+            {% for page_num in orders.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num == orders.page %}
+                        <span class="current">{{ page_num }}</span>
+                    {% else %}
+                        <a href="{{ url_for('orders.history', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if orders.has_next %}
+                <a href="{{ url_for('orders.history', page=orders.next_num) }}">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <p class="text-center">You haven't placed any orders yet.</p>
+        <div class="text-center" style="margin-top: 20px;">
+            <a href="{{ url_for('products.catalog') }}" class="btn btn-primary">Start Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.order-history {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.order-history h1 {
+    color: #d32f2f;
+    margin-bottom: 30px;
+}
+
+.orders-list {
+    margin-bottom: 30px;
+}
+
+.order-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #f5f5f5;
+    padding-bottom: 10px;
+}
+
+.order-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status.pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status.shipped {
+    background: #e3f2fd;
+    color: #2196f3;
+}
+
+.status.delivered {
+    background: #e8f5e9;
+    color: #4caf50;
+}
+
+.order-info {
+    margin: 15px 0;
+}
+
+.order-info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.order-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.pagination a,
+.pagination .current {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #d32f2f;
+}
+
+.pagination a:hover {
+    background: #f5f5f5;
+}
+
+.pagination .current {
+    background: #d32f2f;
+    color: white;
+}
+
+.text-center {
+    text-align: center;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - Ubuyu Marketplace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Notifications</h1>
+    
+    <div class="notifications-list">
+        {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notification-item {% if not notification.read %}unread{% endif %}">
+                <div class="notification-content">
+                    <h3>{{ notification.title }}</h3>
+                    <p>{{ notification.message }}</p>
+                    <small>{{ notification.created_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No notifications yet</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.notifications-list {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.notification-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 4px solid #999;
+    border-radius: 4px;
+}
+
+.notification-item.unread {
+    border-left-color: #d32f2f;
+    background: #fafafa;
+}
+
+.notification-content h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.notification-content p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.notification-content small {
+    color: #999;
+}
+</style>
+{% endblock %}
