@@ -17,9 +17,9 @@ services:
           name: ubuyu-db
           property: connectionString
 
-  - type: pserv
+  - type: postgres
     name: ubuyu-db
-    env: postgres
     region: oregon
     plan: free
-    ipAllowList: []
+    databaseName: ubuyu
+    user: ubuyu
