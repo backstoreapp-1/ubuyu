@@ -6,7 +6,7 @@ services:
     plan: free
     branch: main
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT --timeout 120 'app:create_app(\"production\")'"
+    startCommand: "gunicorn -w 1 --bind 0.0.0.0:$PORT --timeout 120 'app:create_app(\"production\")'"
     envVars:
       - key: FLASK_ENV
         value: production
